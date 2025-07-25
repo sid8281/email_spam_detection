@@ -13,12 +13,14 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-3. ✉️ Sample Inputs: 1)Dear team, please find the attached project update for this week.
+3. ✉️ Sample Inputs:
+
+                      1)Dear team, please find the attached project update for this week.
 
                       2) Congratulations! You've won a free iPhone. Click here to claim
 
 
-5. To deploy in streamlit follow following steps:
+4. To deploy in streamlit follow following steps:
 
      Step1: Open https://streamlit.io/
 
@@ -33,6 +35,6 @@ streamlit run app.py
      Step6: Click Deploy.
 
 
-6. Streamlit Link: https://emailspamdetection-i9cselyuzkzsr7zzjh7swu.streamlit.app/
+5. Streamlit Link: https://emailspamdetection-i9cselyuzkzsr7zzjh7swu.streamlit.app/
 
                    
