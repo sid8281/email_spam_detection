@@ -1,39 +1,39 @@
+
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, accuracy_score
 import joblib
-import os
 
-# Load dataset
-df = pd.read_csv("emails.csv")
+# Load dataset (replace with your full path if needed)
+df = pd.read_csv('spam_dataset.csv')  # Ensure 'text' and 'label' columns exist
 
-# Optional: Convert labels to lowercase
-df['label'] = df['label'].str.lower()
+# Optional: check class balance
+print(df['label'].value_counts())  # 1 = Spam, 0 = Not Spam
 
-# Split data
-X = df['text']
-y = df['label']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(df['text'], df['label'], test_size=0.2, random_state=42)
 
-# TF-IDF Vectorization
+# TF-IDF Vectorization with n-grams
 vectorizer = TfidfVectorizer(stop_words='english', max_df=0.9, ngram_range=(1, 3))
-
 X_train_tfidf = vectorizer.fit_transform(X_train)
 X_test_tfidf = vectorizer.transform(X_test)
 
 # Train model
-model = MultinomialNB()
+model = LogisticRegression(max_iter=300)
 model.fit(X_train_tfidf, y_train)
 
-# Evaluate
-y_pred = model.predict(X_test_tfidf)
-acc = accuracy_score(y_test, y_pred)
-print(f"✅ Model trained with accuracy: {acc * 100:.2f}%")
+# Predict and evaluate
+y_proba = model.predict_proba(X_test_tfidf)[:, 1]
+threshold = 0.65  # Custom threshold for spam (adjust based on ROC analysis)
+y_pred = (y_proba >= threshold).astype(int)
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+print("Accuracy:", accuracy_score(y_test, y_pred))
 
 # Save model and vectorizer
-os.makedirs("model", exist_ok=True)
-joblib.dump(model, "model/spam_classifier.pkl")
-joblib.dump(vectorizer, "model/tfidf_vectorizer.pkl")
-print("🎉 Model and vectorizer saved to /model/")
+joblib.dump((vectorizer, model), 'model/spam_model.pkl')
+print("\nModel + vectorizer saved as 'spam_model.pkl'")
